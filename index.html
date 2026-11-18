@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Łapacz Słówek – ortografia ruchem dłoni</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <video id="video" playsinline muted></video>
+    <canvas id="game"></canvas>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+      <div class="hud-left">
+        <div class="player-chip"><span id="hudAvatar"></span><span id="hudName"></span></div>
+        <div id="score" class="score">0</div>
+        <div id="combo" class="combo"></div>
+        <div id="missionPill" class="mission-pill hidden">
+          <div id="missionPillText"></div>
+          <div class="mission-pill-bar"><div id="missionPillBar"></div></div>
+        </div>
+      </div>
+      <div class="hud-right">
+        <div class="timer">
+          <svg viewBox="0 0 48 48">
+            <circle class="track" cx="24" cy="24" r="20" />
+            <circle id="timerRing" class="prog" cx="24" cy="24" r="20" />
+          </svg>
+          <span id="time">90</span>
+        </div>
+        <button id="muteBtn" class="icon-btn" title="Dźwięk">🔊</button>
+        <button id="pauseBtn" class="icon-btn" title="Pauza (P)">⏸</button>
+      </div>
+    </div>
+
+    <div id="handHint" class="hand-hint hidden">✋ Pokaż dłoń do kamery</div>
+    <div id="toast" class="toast"></div>
+    <div id="countdown" class="countdown"></div>
+
+    <!-- Karta misji -->
+    <div id="missionCard" class="mission-card hidden">
+      <div class="ribbon">MISJA</div>
+      <svg class="mission-ring" viewBox="0 0 100 100">
+        <circle class="track" cx="50" cy="50" r="42" />
+        <circle class="prog" cx="50" cy="50" r="42" />
+      </svg>
+      <div class="mission-icon" id="missionIcon">🎯</div>
+      <h2 id="missionTitle"></h2>
+      <p id="missionSub"></p>
+    </div>
+
+    <!-- Menu -->
+    <section id="menu" class="screen show">
+      <div class="panel">
+        <h1 class="logo">
+          <span class="l1">Łapacz</span>
+          <span class="l2">Słówek</span>
+        </h1>
+        <p class="subtitle">Łap dłonią <b>poprawnie napisane</b> wyrazy, zanim spadną! ✋✨</p>
+
+        <div class="rules">
+          <div class="rule good"><span class="badge">+5</span>poprawny wyraz</div>
+          <div class="rule bad"><span class="badge">−5</span>błędny wyraz</div>
+          <div class="rule miss"><span class="badge">−10</span>nic nie złapiesz</div>
+        </div>
+
+        <h3>Jak masz na imię?</h3>
+        <div class="player-row">
+          <div id="avatarPreview" class="avatar-preview">🦊</div>
+          <input id="nameInput" class="name-input" type="text" maxlength="14" placeholder="Wpisz imię…" autocomplete="off" />
+        </div>
+
+        <h3>Wybierz awatara</h3>
+        <div class="avatars" id="avatarGrid"></div>
+
+        <h3>Ile masz lat?</h3>
+        <div class="seg" id="ageSeg"></div>
+
+        <h3>Szybkość gry</h3>
+        <div class="seg" id="speedSeg"></div>
+
+        <h3>Co ćwiczymy?</h3>
+        <div class="chips" id="catChips"></div>
+
+        <h3>Sterowanie</h3>
+        <div class="seg" id="modeSeg">
+          <button data-mode="hand" class="active">✋ Dłoń (kamera)</button>
+          <button data-mode="mouse">🖱️ Myszka / dotyk</button>
+        </div>
+
+        <button id="startBtn" class="big-btn">Graj! 🚀</button>
+        <div id="status" class="status"></div>
+        <div class="best">🏆 Rekord: <b id="bestScore">0</b></div>
+      </div>
+    </section>
+
+    <!-- Pauza -->
+    <section id="pause" class="screen">
+      <div class="panel small">
+        <h2>Pauza ⏸</h2>
+        <button id="resumeBtn" class="big-btn">Graj dalej ▶</button>
+        <button id="quitBtn" class="ghost-btn">Wróć do menu</button>
+      </div>
+    </section>
+
+    <!-- Koniec gry -->
+    <section id="over" class="screen">
+      <div class="panel">
+        <div id="overAvatar" class="over-avatar">🦊</div>
+        <h2 id="overTitle">Koniec gry!</h2>
+        <div class="final-score"><span id="finalScore">0</span><small>punktów</small></div>
+        <div id="newRecord" class="new-record hidden">🏆 Nowy rekord!</div>
+        <div class="stats">
+          <div><b id="stCorrect">0</b><span>✓ dobrze</span></div>
+          <div><b id="stWrong">0</b><span>✗ błędy</span></div>
+          <div><b id="stMissed">0</b><span>⏳ uciekło</span></div>
+          <div><b id="stAcc">0%</b><span>🎯 celność</span></div>
+          <div><b id="stCombo">0</b><span>🔥 seria</span></div>
+        </div>
+        <div class="ranking">
+          <h3>Ranking 🏅 <small id="rankAge"></small></h3>
+          <ol id="rankList"></ol>
+        </div>
+        <div id="reviewBox" class="review hidden">
+          <h3>Do zapamiętania 📒</h3>
+          <ul id="reviewList"></ul>
+        </div>
+        <button id="againBtn" class="big-btn">Zagraj jeszcze raz 🔁</button>
+        <button id="menuBtn" class="ghost-btn">Menu</button>
+      </div>
+    </section>
+
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

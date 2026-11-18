@@ -1,0 +1,9 @@
+{
+  "name": "lapacz-slowek",
+  "version": "1.0.0",
+  "description": "Gra ortograficzna sterowana ruchem dłoni (kamera + MediaPipe)",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  }
+}
